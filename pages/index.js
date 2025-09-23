@@ -1,41 +1,52 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 
-export default function HumanLoop() {
-  const r = useRouter();
+export default function Home() {
   const [feelingToday, setFeelingToday] = useState("");
   const [scene, setScene] = useState("");
-  const [seeing, setSeeing] = useState("");
-  const [hearing, setHearing] = useState("");
-  const [smelling, setSmelling] = useState("");
-  const [tasting, setTasting] = useState("");
-  const [touching, setTouching] = useState("");
-  const [prompt, setPrompt] = useState("");
 
-  function saveAndNext() {
-    const haiku = [
-      feelingToday || "Quiet resolve",
-      seeing || "City lights breathing slowly",
-      prompt || "What would you say now?"
-    ].join("\n");
-
+  function handleSubmit(e) {
+    e.preventDefault();
     const ritual = {
-      feelingToday, scene,
-      senses: { seeing, hearing, smelling, tasting, touching },
-      prompt,
-      haiku,
-      createdAt: new Date().toISOString()
+      feelingToday,
+      scene,
+      createdAt: new Date().toISOString(),
     };
-    if (typeof window !== "undefined") {
-      localStorage.setItem("quodx.ritual", JSON.stringify(ritual));
-    }
-    r.push("/visualize");
+    localStorage.setItem("quodx.ritual", JSON.stringify(ritual));
+    window.location.href = "/visualize";
   }
 
   return (
     <div className="container">
-      <header><h1>QuodX Spaces – Remix Kit Demo</h1></header>
+      <header>
+        <h1>Quodx Spaces</h1>
+        <h2>Human Loop</h2>
+      </header>
 
       <section className="panel">
-        <h2>Human Loop</h2>
-        <div className="grid-2">
+        <form onSubmit={handleSubmit}>
+          <div className="grid-2">
+            <label>
+              How are you feeling today?
+              <input
+                value={feelingToday}
+                onChange={(e) => setFeelingToday(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Imagine a scene:
+              <input
+                value={scene}
+                onChange={(e) => setScene(e.target.value)}
+                required
+              />
+            </label>
+          </div>
+          <div className="row" style={{ marginTop: 20 }}>
+            <button type="submit">➡️ Continue</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
